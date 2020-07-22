@@ -23,7 +23,7 @@ abstract contract SellerSmartContract {
 
     function deliverItem (address newOwner, address item) private {
         Item(item).transferOwnership(newOwner);
-        bytes memory data = abi.encodeWithSignature("receive((address))", item);
+        bytes memory data = abi.encodeWithSignature("receiveItem((address))", item);
         address(newOwner).call(data);
     }
     

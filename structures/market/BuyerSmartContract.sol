@@ -7,7 +7,7 @@ abstract contract BuyerSmartContract {
     address[] goods;
   
     function buyItem (address sellerSmartContract, string memory itemName, uint price) public {
-        bytes memory data = abi.encodeWithSignature("sell((string))", itemName);
+        bytes memory data = abi.encodeWithSignature("sellItem((string))", itemName);
         address(sellerSmartContract).call{value: price}(data);
     }
 
