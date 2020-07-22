@@ -3,12 +3,15 @@ pragma solidity >=0.4.16 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 abstract contract BuyerSmartContract {
-    // The list of known seller smart contracts.
-    address[] private sellerSmartContracts;
-    
-    function purchase (string memory itemName, int price) public {
-            bytes memory data = abi.encodeWithSignature("reciveOffer((string, int))", itemName, price);
-            address(sellerSmartContracts).call{value: 1}(data);                                                                                                                         
-        }
+
+    address[] goods;
+  
+    function buyItem (address sellerSmartContract, string memory itemName, uint price) public {
+        bytes memory data = abi.encodeWithSignature("sell((string))", itemName);
+        address(sellerSmartContract).call{value: price}(data);
+    }
+
+    function receiveItem (address newItem) public {
+        goods.push(newItem);
     }
 }

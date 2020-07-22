@@ -9,15 +9,22 @@ abstract contract SellerSmartContract {
     mapping(string => uint) priceCatalog;
     mapping(string => address[]) itemCatalog;
     
-    function reciveOffer (string memory itemName) public payable {
-        uint itemValue = priceCatalog[itemName];        
-        require(itemValue != uint(0x0));
+    function sellItem (string memory itemName) public payable {
+        uint itemValue = priceCatalog[itemName];    
+        require(msg.value >= itemValue);
         
         address[] storage itemList = itemCatalog[itemName];
         require(itemList.length != uint(0x0));
 
-        Item(itemList[itemList.length - 1]).transferOwnership(msg.sender);
+        deliverItem(msg.sender, itemList[itemList.length - 1]);
 
         itemList.pop;
     }
+
+    function deliverItem (address newOwner, address item) private {
+        Item(item).transferOwnership(newOwner);
+        bytes memory data = abi.encodeWithSignature("receive((address))", item);
+        address(newOwner).call(data);
+    }
+    
 }
