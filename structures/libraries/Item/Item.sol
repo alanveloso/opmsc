@@ -13,8 +13,9 @@ contract Item {
         _;
     }
 
-    function transferOwnership(address newOwner) public onlyOwner {
+    function transferOwnership(address newOwner) public onlyOwner returns (bool) {
         owner = newOwner;
+        return true;
     }
 
 }
