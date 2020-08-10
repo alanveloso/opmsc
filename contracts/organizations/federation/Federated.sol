@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.4.16 <0.7.0;
+pragma solidity >=0.4.16 <=0.7.0;
 
-abstract contract Member {
+abstract contract Federated {
     address intermediary;
     address owner;
 
@@ -20,7 +20,7 @@ abstract contract Member {
         bool _success
     );
 
-    constructor() internal {
+    constructor() {
         owner = msg.sender;
     }
 
@@ -44,6 +44,7 @@ abstract contract Member {
     function reply(bytes memory result, address origin) public {
         bytes memory data = abi.encodeWithSignature("recive((bytes))", result);
         data = bytes(abi.encodePacked(data, origin));
-        address(intermediary).call(data);
+        (bool success, ) = address(intermediary).call(data);
+        require(success);
     }
 }

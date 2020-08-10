@@ -72,6 +72,11 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+    development: {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "*"
+    }
   },
 
   // Set default mocha options here, use special reporters etc.
@@ -82,7 +87,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      // version: "0.5.1",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.7.0",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
