@@ -1,41 +1,26 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.4.16 <0.8.0;
 
+import { Agent } from "../../bade/core/Agent.sol";
 import { Item } from "../libraries/Item/Item.sol";
 
-abstract contract Seller {
+abstract contract Seller is Agent {
     
     /* Attributes */
-    mapping(bytes => uint) priceCatalog;
-    mapping(bytes => address[]) itemCatalog;
-    mapping(bytes => bool) stockedItems;
-    mapping(address => uint) pendingChange;
+    mapping(string => uint) catalogue;
+    mapping(string => address[]) stock;
 
-    /* Behaviours */   
-    function sell(bytes memory item) public payable {
-        address buyer = msg.sender;
-        require(stockedItems[item]);
-        uint itemValue = priceCatalog[item];    
-        require(msg.value >= itemValue);
-        address[] storage itemList = itemCatalog[item];
-        require(itemList.length != 0);
-        address itemSold = itemList[itemList.length - 1];
-        itemList.pop;
-        deliver(buyer, itemSold);
-        if (msg.value - itemValue > 0) {
-            pendingChange += msg.value - itemValue;
-        }
-    }
-
-    function deliver(address newOwner, address item) private {
-        Item(item).transferOwnership(newOwner);
-        bytes memory data = abi.encodeWithSignature("receiveItem((address))", item);
-        address(newOwner).call(data);
-    }
-
-    function withdraw() public {
-        uint share = shares[msg.sender];
-        shares[msg.sender] = 0;
-        msg.sender.transfer(share);
+    /* Behaviours */
+    function sell(string memory itemName) public payable returns (address){
+        uint price = catalogue[itemName];
+        require(price > 0, "not-available");
+        uint value = msg.value;
+        require(value >= price);
+        address[] storage stockedItemList = stock[itemName];
+        uint amtStockedItemList = stockedItemList.length;
+        require(amtStockedItemList != 0);
+        address itemSold = stockedItemList[amtStockedItemList - 1];
+        stockedItemList.pop;
+        return itemSold;
     }
 }

@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.4.16 <=0.7.0;
-pragma experimental ABIEncoderV2;
+pragma solidity >=0.4.16 <0.8.0;
 
-abstract contract Buyer {
+import { Agent } from "../../bade/core/Agent.sol";
+
+contract Buyer is Agent {
 
     address[] goods;
-  
-    function buy(address seller, bytes memory item, uint price) public {
-        bytes memory data = abi.encodeWithSignature("sell((bytes))", item);
-        (bool success, ) = address(seller).call{value: price}(data);
-        require(success);
-    }
 
-    function receiveItem(address item) public {
+    function buy(address seller, string memory itemName, uint price) public {
+        bytes memory message = abi.encodeWithSignature("sell((string))", itemName);
+        bytes memory reply = send(seller, message, price);
+        address item = abi.decode(reply, (address));
         goods.push(item);
     }
 }
