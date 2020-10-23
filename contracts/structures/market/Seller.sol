@@ -2,7 +2,7 @@
 pragma solidity >=0.4.16 <0.8.0;
 
 import { Agent } from "../../bade/core/Agent.sol";
-import { Item } from "../libraries/Item/Item.sol";
+import { Item } from "../../libraries/Item/Item.sol";
 
 abstract contract Seller is Agent {
     
