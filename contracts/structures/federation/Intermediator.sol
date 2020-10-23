@@ -1,28 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.4.16 <=0.7.0;
 
-abstract contract Intermediator {
+import { Agent } from "../../bade/core/Agent.sol";
+
+contract Intermediator is Agent {
     
-    /* Attributes */
     address[] federateds;
     mapping(address => bool) allowedFederateds;
     mapping(address => bytes) pendingReturns;
 
-    /* Modifiers */
-    modifier onlyIntermediary() {
+    /// @notice Allow only federateds members.
+    modifier onlyFederateds() {
         require(allowedFederateds[msg.sender]);
         _;
-    }
-
-    /* Agent */
-    function send(address to, bytes memory data) public returns (bool) {
-        (bool success, ) = to.call(data);
-        return success;
-    }
-
-    function receive(bytes memory message) public {
-        (bytes memory result, address origin) = abi.decode(message, (bytes, address));
-        pendingReturns[origin] = result;
     }
 
     /* Behaviours */
@@ -43,19 +33,12 @@ abstract contract Intermediator {
         require(status);
     }
 
-    // Function for other smart contracts
-    function enroll() public {
-        if (allowedFederateds[msg.sender])
-        federateds.push(msg.sender);
-    }
-
     // Withdraw a result from a call.
     function withdraw() public returns (bytes memory) {
         bytes memory result = pendingReturns[msg.sender];
         if (result.length != 0) {
             pendingReturns[msg.sender] = "";
         }
-        
         return (result);
     }
 }
