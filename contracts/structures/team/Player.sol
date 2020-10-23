@@ -3,7 +3,7 @@ pragma solidity >=0.4.16 <=0.7.0;
 
 import { Agent } from "../../bade/core/Agent.sol";
 
-contract Manager is Agent {
+contract Player is Agent {
     
     address[] teammate;
     mapping(address => bool) allowedTeammate;
